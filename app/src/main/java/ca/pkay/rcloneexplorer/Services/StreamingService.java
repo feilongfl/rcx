@@ -66,12 +66,13 @@ public class StreamingService extends IntentService {
         final Boolean allowRemoteAccess = intent.getBooleanExtra(ALLOW_REMOTE_ACCESS, false);
         final String authenticationUsername = intent.getStringExtra(AUTHENTICATION_USERNAME);
         final String authenticationPassword = intent.getStringExtra(AUTHENTICATION_PASSWORD);
+        final int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
 
         Intent foregroundIntent = new Intent(this, StreamingService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, foregroundIntent, pendingFlags);
 
         Intent cancelIntent = new Intent(this, ServeCancelAction.class);
-        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, 0, cancelIntent, 0);
+        PendingIntent cancelPendingIntent = PendingIntent.getBroadcast(this, 0, cancelIntent, pendingFlags);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_streaming)
@@ -84,7 +85,7 @@ public class StreamingService extends IntentService {
             Uri uri = Uri.parse("http://127.0.0.1:" + port);
             Intent webPageIntent = new Intent(Intent.ACTION_VIEW, uri);
             webPageIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent webPagePendingIntent = PendingIntent.getActivity(this, 0, webPageIntent, 0);
+            PendingIntent webPagePendingIntent = PendingIntent.getActivity(this, 0, webPageIntent, pendingFlags);
             builder.setContentIntent(webPagePendingIntent);
             builder.setContentText(getString(R.string.streaming_service_notification_content, port));
         }
